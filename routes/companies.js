@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const User = require("../models/User");
+const Companies = require("../models/Company");
 
 const salt = 10;
 
 router.post("/signin", (req, res, next) => {
   const { email, password } = req.body;
-  User.findOne({ email })
+  Companies.findOne({ email })
     .then((userDocument) => {
       if (!userDocument) {
         return res.status(400).json({ message: "Invalid credentials" });
@@ -22,28 +22,46 @@ router.post("/signin", (req, res, next) => {
       }
 
       req.session.currentUser = userDocument._id;
-      res.redirect("/api/auth/isLoggedIn");
+      res.redirect("/api/companies/isLoggedIn");
     })
     .catch(next);
 });
 
 router.post("/signup", (req, res, next) => {
-  const { email, password, firstName, lastName } = req.body;
+  const {
+    email,
+    password,
+    companyName,
+    producerName,
+    phoneNumber,
+    schedule,
+    field,
+    description,
+  } = req.body;
 
-  User.findOne({ email })
+  Companies.findOne({ email })
     .then((userDocument) => {
       if (userDocument) {
         return res.status(400).json({ message: "Email already taken" });
       }
 
       const hashedPassword = bcrypt.hashSync(password, salt);
-      const newUser = { email, lastName, firstName, password: hashedPassword };
+      const newCompany = {
+        email,
+        password: hashedPassword,
+        companyName,
+        producerName,
+        phoneNumber,
+        schedule,
+        field,
+        description,
+      };
 
-      User.create(newUser)
+      Companies.create(newCompany)
         .then((newUserDocument) => {
           /* Login on signup */
           req.session.currentUser = newUserDocument._id;
-          res.redirect("/api/auth/isLoggedIn");
+          res.redirect("/api/companies/isLoggedIn");
         })
         .catch(next);
     })
@@ -56,7 +74,7 @@ router.get("/isLoggedIn", (req, res, next) => {
 
   const id = req.session.currentUser;
 
-  User.findById(id)
+  Companies.findById(id)
     .select("-password")
     .then((userDocument) => {
       res.status(200).json(userDocument);
