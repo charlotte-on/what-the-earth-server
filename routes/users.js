@@ -50,4 +50,18 @@ router.post("/", (req, res, next) => {
     });
 });
 
+// http://localhost:4000/api/users/{some-id}
+router.delete("/:id", (req, res, next) => {
+  // Deletes a user
+  User.findByIdAndRemove(req.params.id)
+    .then((userDocument) => {
+      res.status(204).json({
+        message: "User deleted",
+      });
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
 module.exports = router;
