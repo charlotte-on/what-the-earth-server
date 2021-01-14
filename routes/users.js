@@ -26,32 +26,33 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
-// http://localhost:4000/api/users/{some-id}
-router.patch("/:id", (req, res, next) => {
-  // Update a specific user
-  User.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    .then((userDocument) => {
-      res.status(200).json(userDocument);
-    })
-    .catch((error) => {
-      next(error);
-    });
-});
+// // http://localhost:4000/api/users/{some-id}
+// router.patch("/:id", (req, res, next) => {
+//   // Update a specific user
+//   User.findByIdAndUpdate(req.params.id, req.body, { new: true })
+//     .then((userDocument) => {
+//       res.status(200).json(userDocument);
+//     })
+//     .catch((error) => {
+//       next(error);
+//     });
+// });
 
-// http://localhost:4000/api/users
-router.post("/", (req, res, next) => {
-  // Create a user
-  User.create(req.body)
-    .then((userDocument) => {
-      res.status(201).json(userDocument);
-    })
-    .catch((error) => {
-      next(error);
-    });
-});
+// // http://localhost:4000/api/users
+// router.post("/", (req, res, next) => {
+//   // Create a user
+//   User.create(req.body)
+//     .then((userDocument) => {
+//       res.status(201).json(userDocument);
+//     })
+//     .catch((error) => {
+//       next(error);
+//     });
+// });
 
 // http://localhost:4000/api/users/{some-id}
 router.delete("/:id", (req, res, next) => {
+  // pas id mais session
   // Deletes a user
   User.findByIdAndRemove(req.params.id)
     .then((userDocument) => {
