@@ -5,6 +5,27 @@ const Companies = require("../models/Company");
 
 const salt = 10;
 
+router.get("/", (req, res, next) => {
+  Companies.find()
+    .then((companiesDocument) => {
+      res.status(200).json(companiesDocument);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
+router.get("/:id", (req, res, next) => {
+  Companies.findById(req.params.id)
+    .select("-password")
+    .then((companiesDocument) => {
+      res.status(200).json(companiesDocument);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
 router.post("/signin", (req, res, next) => {
   const { email, password } = req.body;
   Companies.findOne({ email })
@@ -32,11 +53,14 @@ router.post("/signup", (req, res, next) => {
     email,
     password,
     companyName,
-    producerName,
+    producerFirstName,
+    producerLastName,
     phoneNumber,
     schedule,
     field,
     description,
+    location,
+    formattedAddress,
   } = req.body;
 
   Companies.findOne({ email })
@@ -50,11 +74,14 @@ router.post("/signup", (req, res, next) => {
         email,
         password: hashedPassword,
         companyName,
-        producerName,
+        producerFirstName,
+        producerLastName,
         phoneNumber,
         schedule,
         field,
         description,
+        location,
+        formattedAddress,
       };
 
       Companies.create(newCompany)
