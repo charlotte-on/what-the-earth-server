@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const upload = require("../config/cloudinary");
 
 // http://localhost:4000/api/users
 router.get("/", (req, res, next) => {
@@ -26,17 +27,21 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
-// // http://localhost:4000/api/users/{some-id}
-// router.patch("/:id", (req, res, next) => {
-//   // Update a specific user
-//   User.findByIdAndUpdate(req.params.id, req.body, { new: true })
-//     .then((userDocument) => {
-//       res.status(200).json(userDocument);
-//     })
-//     .catch((error) => {
-//       next(error);
-//     });
-// });
+// http://localhost:4000/api/users/{some-id}
+router.patch("/me", upload.single("image"), (req, res, next) => {
+  const userId = req.session.currentUser;
+  if (req.file) {
+    req.body.image = req.file.path;
+  }
+  // Update a specific user
+  User.findByIdAndUpdate(userId, req.body, { new: true })
+    .then((userDocument) => {
+      res.status(200).json(userDocument);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
 
 // // http://localhost:4000/api/users
 // router.post("/", (req, res, next) => {
