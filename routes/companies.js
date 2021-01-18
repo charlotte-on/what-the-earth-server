@@ -26,6 +26,17 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
+router.get("/edit/:id", (req, res, next) => {
+  Companies.findById(req.params.id)
+    .select("-password")
+    .then((companiesDocument) => {
+      res.status(200).json(companiesDocument);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
 router.post("/signin", (req, res, next) => {
   const { email, password } = req.body;
   Companies.findOne({ email })
@@ -43,7 +54,8 @@ router.post("/signin", (req, res, next) => {
       }
 
       req.session.currentUser = userDocument._id;
-      res.redirect("/api/companies/isLoggedIn");
+      req.session.producer = true;
+      res.redirect("/api/auth/isLoggedIn");
     })
     .catch(next);
 });
@@ -88,32 +100,11 @@ router.post("/signup", (req, res, next) => {
         .then((newUserDocument) => {
           /* Login on signup */
           req.session.currentUser = newUserDocument._id;
-          res.redirect("/api/companies/isLoggedIn");
+          res.redirect("/api/auth/isLoggedIn");
         })
         .catch(next);
     })
     .catch(next);
-});
-
-router.get("/isLoggedIn", (req, res, next) => {
-  if (!req.session.currentUser)
-    return res.status(401).json({ message: "Unauthorized" });
-
-  const id = req.session.currentUser;
-
-  Companies.findById(id)
-    .select("-password")
-    .then((userDocument) => {
-      res.status(200).json(userDocument);
-    })
-    .catch(next);
-});
-
-router.get("/logout", (req, res, next) => {
-  req.session.destroy(function (error) {
-    if (error) next(error);
-    else res.status(200).json({ message: "Succesfully disconnected." });
-  });
 });
 
 module.exports = router;

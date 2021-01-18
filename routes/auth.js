@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const Companies = require("../models/Company");
 
 const salt = 10;
 
@@ -51,17 +52,24 @@ router.post("/signup", (req, res, next) => {
 });
 
 router.get("/isLoggedIn", (req, res, next) => {
-  if (!req.session.currentUser)
-    return res.status(401).json({ message: "Unauthorized" });
-
   const id = req.session.currentUser;
-
-  User.findById(id)
-    .select("-password")
-    .then((userDocument) => {
-      res.status(200).json(userDocument);
-    })
-    .catch(next);
+  if (!req.session.currentUser) {
+    return res.status(401).json({ message: "Unauthorized" });
+  } else if (req.session.producer) {
+    Companies.findById(id)
+      .select("-password")
+      .then((userDocument) => {
+        res.status(200).json(userDocument);
+      })
+      .catch(next);
+  } else {
+    User.findById(id)
+      .select("-password")
+      .then((userDocument) => {
+        res.status(200).json(userDocument);
+      })
+      .catch(next);
+  }
 });
 
 router.get("/logout", (req, res, next) => {
