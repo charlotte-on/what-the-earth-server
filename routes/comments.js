@@ -13,7 +13,9 @@ const User = require("../models/User");
 // });
 
 router.post("/", (req, res, next) => {
-  Comments.create(req.body)
+  const comment = { ...req.body };
+  comment.userId = req.session.currentUser;
+  Comments.create(comment)
     .then((apiResponse) => {
       res.status(200).json(apiResponse);
     })
