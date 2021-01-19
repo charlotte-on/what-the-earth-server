@@ -29,8 +29,16 @@ router.post("/signin", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
-  const { email, password, firstName, lastName } = req.body;
+  // , upload.single("image")
+  const { email, password, firstName, lastName } = req.body; // image
 
+  // const userId = req.session.currentUser;
+  // if (req.file) {
+  //   req.body.image = req.file.path;
+  // how do I update this code for the signup??
+
+  // User.findByIdAndUpdate(userId, req.body, { new: true })
+  // how do I update this code for the signup??
   User.findOne({ email })
     .then((userDocument) => {
       if (userDocument) {
@@ -38,7 +46,13 @@ router.post("/signup", (req, res, next) => {
       }
 
       const hashedPassword = bcrypt.hashSync(password, salt);
-      const newUser = { email, lastName, firstName, password: hashedPassword };
+      const newUser = {
+        //image
+        email,
+        lastName,
+        firstName,
+        password: hashedPassword,
+      };
 
       User.create(newUser)
         .then((newUserDocument) => {
@@ -77,6 +91,25 @@ router.get("/logout", (req, res, next) => {
     if (error) next(error);
     else res.status(200).json({ message: "Succesfully disconnected." });
   });
+});
+
+// http://localhost:4000/api/users/{some-id}
+router.patch("/me/password", (req, res, next) => {
+  const userId = req.session.currentUser;
+
+  // get passwords
+  // comparer ancien password avec actuel
+  // if les 2 sont egaux update (statu 200)
+  // else pas egaux "wrong password" (statu 400/500)
+
+  // Update a specific passwrod
+  User.findByIdAndUpdate(userId, req.body, { new: true })
+    .then((userDocument) => {
+      res.status(200).json(userDocument);
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 module.exports = router;

@@ -39,7 +39,7 @@ app.use(function (req, res, next) {
 });
 
 /**
- * Routes
+ * Routes & prefixes
  */
 
 const authRouter = require("./routes/auth");

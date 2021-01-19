@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const upload = require("../config/cloudinary");
+const { route } = require("./auth");
 
 // http://localhost:4000/api/users
 router.get("/", (req, res, next) => {
@@ -34,6 +35,25 @@ router.patch("/me", upload.single("image"), (req, res, next) => {
     req.body.image = req.file.path;
   }
   // Update a specific user
+  User.findByIdAndUpdate(userId, req.body, { new: true })
+    .then((userDocument) => {
+      res.status(200).json(userDocument);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
+// http://localhost:4000/api/users/{some-id}
+router.patch("/me/password", (req, res, next) => {
+  const userId = req.session.currentUser;
+
+  // get passwords
+  // comparer ancien password avec actuel
+  // if les 2 sont egaux update (statu 200)
+  // else pas egaux "wrong password" (statu 400/500)
+
+  // Update a specific passwrod
   User.findByIdAndUpdate(userId, req.body, { new: true })
     .then((userDocument) => {
       res.status(200).json(userDocument);
