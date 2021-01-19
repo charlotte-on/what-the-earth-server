@@ -16,8 +16,8 @@ router.post("/", (req, res, next) => {
   const comment = { ...req.body };
   comment.userId = req.session.currentUser;
   Comments.create(comment)
-    .then((apiResponse) => {
-      res.status(200).json(apiResponse);
+    .then((dbRes) => {
+      res.status(200).json(dbRes);
     })
     .catch(next);
 });
@@ -25,8 +25,8 @@ router.post("/", (req, res, next) => {
 router.get("/:id", (req, res, next) => {
   Comments.find({ producerId: req.params.id })
     .populate("userId", "-password")
-    .then((apiResponse) => {
-      res.status(200).json(apiResponse);
+    .then((dbRes) => {
+      res.status(200).json(dbRes);
     })
     .catch(next);
 });
