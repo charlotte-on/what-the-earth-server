@@ -4,9 +4,9 @@ const Schema = mongoose.Schema;
 const commentSchema = new Schema(
   {
     rate: { type: Number, required: true },
-    review: String,
-    userId: { type: Schema.Types.ObjectId, ref: "user" },
-    producerId: { type: Schema.Types.ObjectId, ref: "Company" },
+    review: { type: String, required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "user", required: true },
+    producerId: { type: Schema.Types.ObjectId, ref: "Company", required: true },
   },
   { timestamps: true }
 );
