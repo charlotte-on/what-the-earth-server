@@ -44,25 +44,6 @@ router.patch("/me", upload.single("image"), (req, res, next) => {
     });
 });
 
-// http://localhost:4000/api/users/{some-id}
-router.patch("/me/password", (req, res, next) => {
-  const userId = req.session.currentUser;
-
-  // get passwords
-  // comparer ancien password avec actuel
-  // if les 2 sont egaux update (statu 200)
-  // else pas egaux "wrong password" (statu 400/500)
-
-  // Update a specific passwrod
-  User.findByIdAndUpdate(userId, req.body, { new: true })
-    .then((userDocument) => {
-      res.status(200).json(userDocument);
-    })
-    .catch((error) => {
-      next(error);
-    });
-});
-
 // // http://localhost:4000/api/users
 // router.post("/", (req, res, next) => {
 //   // Create a user
