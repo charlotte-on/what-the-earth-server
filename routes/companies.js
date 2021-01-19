@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const Companies = require("../models/Company");
+const upload = require("../config/cloudinary");
 
 const salt = 10;
 
@@ -37,6 +38,16 @@ router.get("/edit/:id", (req, res, next) => {
     });
 });
 
+router.patch("/edit/:id", (req, res, next) => {
+  Companies.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then((companiesDocument) => {
+      res.status(200).json(companiesDocument);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
 router.post("/signin", (req, res, next) => {
   const { email, password } = req.body;
   Companies.findOne({ email })
@@ -61,6 +72,9 @@ router.post("/signin", (req, res, next) => {
 });
 
 router.post("/signup", (req, res, next) => {
+  if (req.file) {
+    req.body.bannerImg = req.file.path;
+  }
   const {
     email,
     password,
@@ -73,6 +87,7 @@ router.post("/signup", (req, res, next) => {
     description,
     location,
     formattedAddress,
+    bannerImg,
   } = req.body;
 
   Companies.findOne({ email })
@@ -94,11 +109,13 @@ router.post("/signup", (req, res, next) => {
         description,
         location,
         formattedAddress,
+        bannerImg,
       };
 
       Companies.create(newCompany)
         .then((newUserDocument) => {
           /* Login on signup */
+          req.session.producer = true;
           req.session.currentUser = newUserDocument._id;
           res.redirect("/api/auth/isLoggedIn");
         })
