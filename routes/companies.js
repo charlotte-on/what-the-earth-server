@@ -71,16 +71,13 @@ router.post("/signin", (req, res, next) => {
     .catch(next);
 });
 
-router.post("/signup", (req, res, next) => {
-  if (req.file) {
-    req.body.bannerImg = req.file.path;
-  }
+router.post("/signup", upload.single("bannerImg"), (req, res, next) => {
   const {
     email,
     password,
     companyName,
-    producerFirstName,
-    producerLastName,
+    firstName,
+    lastName,
     phoneNumber,
     schedule,
     field,
@@ -89,6 +86,10 @@ router.post("/signup", (req, res, next) => {
     formattedAddress,
     bannerImg,
   } = req.body;
+
+  if (req.file) {
+    req.body.bannerImg = req.file.path;
+  }
 
   Companies.findOne({ email })
     .then((userDocument) => {
@@ -101,15 +102,15 @@ router.post("/signup", (req, res, next) => {
         email,
         password: hashedPassword,
         companyName,
-        producerFirstName,
-        producerLastName,
+        firstName,
+        lastName,
         phoneNumber,
         schedule,
         field,
         description,
         location,
         formattedAddress,
-        bannerImg,
+        bannerImg: req.body.bannerImg,
       };
 
       Companies.create(newCompany)
