@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const upload = require("../config/cloudinary");
 const { route } = require("./auth");
+const requireAuth = require("../middlewares/requireAuth");
 
 // http://localhost:4000/api/users
 router.get("/", (req, res, next) => {

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Comments = require("../models/Comments");
 const User = require("../models/User");
+const requireAuth = require("../middlewares/requireAuth");
 
 // router.get("/", (req, res, next) => {
 //   Comments.find()

@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const Companies = require("../models/Company");
 const upload = require("../config/cloudinary");
+const requireAuth = require("../middlewares/requireAuth");
 
 const salt = 10;
 
