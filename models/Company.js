@@ -4,8 +4,9 @@ const Schema = mongoose.Schema;
 const companySchema = new Schema(
   {
     companyName: { type: String, required: true },
-    producerFirstName: { type: String, required: true },
-    producerLastName: { type: String, required: true },
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    bannerImg: String,
     email: { type: String, required: true },
     password: { type: String, required: true },
     phoneNumber: { type: String, required: true },
@@ -22,11 +23,6 @@ const companySchema = new Schema(
     },
     field: { type: String, required: true },
     description: { type: String, required: true },
-    rate: {
-      rate: { type: Schema.Types.ObjectId, ref: "Rate" },
-      review: { type: Schema.Types.ObjectId, ref: "Review" },
-      author: { type: Schema.Types.ObjectId, ref: "User" },
-    },
   },
   { timestamps: true }
 );

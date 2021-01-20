@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const Companies = require("../models/Company");
+const upload = require("../config/cloudinary");
 
 const salt = 10;
 
@@ -28,17 +29,14 @@ router.post("/signin", (req, res, next) => {
     .catch(next);
 });
 
-router.post("/signup", (req, res, next) => {
-  // , upload.single("image")
-  const { email, password, firstName, lastName } = req.body; // image
+router.post("/signup", upload.single("image"), (req, res, next) => {
+  const { image, email, password, firstName, lastName } = req.body;
+  console.log(req.body);
+  if (req.file) {
+    req.body.image = req.file.path;
+    console.log("toto");
+  }
 
-  // const userId = req.session.currentUser;
-  // if (req.file) {
-  //   req.body.image = req.file.path;
-  // how do I update this code for the signup??
-
-  // User.findByIdAndUpdate(userId, req.body, { new: true })
-  // how do I update this code for the signup??
   User.findOne({ email })
     .then((userDocument) => {
       if (userDocument) {
@@ -47,13 +45,15 @@ router.post("/signup", (req, res, next) => {
 
       const hashedPassword = bcrypt.hashSync(password, salt);
       const newUser = {
-        //image
+        image: req.body.image,
         email,
         lastName,
         firstName,
         password: hashedPassword,
       };
 
+      console.log(newUser);
+      // res.sendStatus(200);
       User.create(newUser)
         .then((newUserDocument) => {
           /* Login on signup */
@@ -93,23 +93,40 @@ router.get("/logout", (req, res, next) => {
   });
 });
 
-// http://localhost:4000/api/users/{some-id}
+// http://localhost:4000/api/users/{some-id}/password
 router.patch("/me/password", (req, res, next) => {
   const userId = req.session.currentUser;
 
-  // get passwords
-  // comparer ancien password avec actuel
-  // if les 2 sont egaux update (statu 200)
-  // else pas egaux "wrong password" (statu 400/500)
+  // get one specific user
+  User.findById(userId).then((userDocument) => {
+    // console.log(userDocument.password);
+    // console.log(req.body);
+    const isValidPassword = bcrypt.compareSync(
+      req.body.old_password,
+      userDocument.password
+    );
+    // console.log(isValidPassword);
+    if (isValidPassword) {
+      const hashedPassword = bcrypt.hashSync(req.body.new_password, salt);
+      const newUser = {
+        password: hashedPassword,
+      };
 
-  // Update a specific passwrod
-  User.findByIdAndUpdate(userId, req.body, { new: true })
-    .then((userDocument) => {
-      res.status(200).json(userDocument);
-    })
-    .catch((error) => {
-      next(error);
-    });
+      User.findByIdAndUpdate(userId, newUser, { new: true })
+        .then((userDocument) => {
+          res.status(200).json(userDocument);
+        })
+        .catch((error) => {
+          next(error);
+        });
+    } else {
+      res
+        .status(400)
+        .json({ message: "Error, the password has to be different" });
+    }
+  });
 });
+
+// confirmed where to put the route with Franck: user or path?
 
 module.exports = router;
