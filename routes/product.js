@@ -5,6 +5,7 @@ const requireAuth = require("../middlewares/requireAuth");
 
 router.get(
   "https://koumoul.com/s/data-fair/api/v1/datasets/agribalyse-synthese/",
+  requireAuth,
   function (req, res, next) {
     WholeProduct.find({})
       .then((wproducts) => res.status(200).json(wproducts))

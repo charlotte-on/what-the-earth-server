@@ -13,7 +13,7 @@ const requireAuth = require("../middlewares/requireAuth");
 //     .catch(next);
 // });
 
-router.post("/", (req, res, next) => {
+router.post("/", requireAuth, (req, res, next) => {
   const comment = { ...req.body };
   comment.userId = req.session.currentUser;
   Comments.create(comment)
@@ -23,7 +23,7 @@ router.post("/", (req, res, next) => {
     .catch(next);
 });
 
-router.get("/:id", (req, res, next) => {
+router.get("/:id", requireAuth, (req, res, next) => {
   Comments.find({ producerId: req.params.id })
     .populate("userId", "-password")
     .then((dbRes) => {
