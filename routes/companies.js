@@ -44,6 +44,9 @@ router.patch(
   upload.single("bannerImg"),
   requireAuth,
   (req, res, next) => {
+    if (req.file) {
+      req.body.bannerImg = req.file.path;
+    }
     Companies.findByIdAndUpdate(req.params.id, req.body, { new: true })
       .then((companiesDocument) => {
         res.status(200).json(companiesDocument);
