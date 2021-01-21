@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon ./bin/www",
     "start": "node ./bin/www",
-    "build-react": "echo ---- creating react build --- && cd ../what-the-earth-client  && npm install && npm run build && cp -r ./build/* ../what-the-earth-server/public/ && cd .."
+    "build-react": "echo ---- creating react build --- && cd ../client  && npm install && npm run build && cp -r ./build/* ../server/public/ && cd .."
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
