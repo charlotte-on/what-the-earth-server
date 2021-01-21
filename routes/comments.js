@@ -4,15 +4,6 @@ const Comments = require("../models/Comments");
 const User = require("../models/User");
 const requireAuth = require("../middlewares/requireAuth");
 
-// router.get("/", (req, res, next) => {
-//   Comments.find()
-//     .then((apiResponse) => {
-//       console.log(apiResponse);
-//       res.status(200).json(apiResponse);
-//     })
-//     .catch(next);
-// });
-
 router.post("/", requireAuth, (req, res, next) => {
   const comment = { ...req.body };
   comment.userId = req.session.currentUser;
@@ -23,7 +14,7 @@ router.post("/", requireAuth, (req, res, next) => {
     .catch(next);
 });
 
-router.get("/:id", requireAuth, (req, res, next) => {
+router.get("/:id", (req, res, next) => {
   Comments.find({ producerId: req.params.id })
     .populate("userId", "-password")
     .then((dbRes) => {
