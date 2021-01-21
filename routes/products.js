@@ -1,6 +1,5 @@
 const express = require("express");
 const Recipe = require("../models/Recipe");
-const User = require("../models/User");
 const router = express.Router();
 
 router.post("/simulator", function (req, res, next) {
