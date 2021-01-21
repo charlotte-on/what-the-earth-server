@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const recipe = new Schema({
-  selectedProducts: [{ String }],
+  products: [{}],
   user: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
