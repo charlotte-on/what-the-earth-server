@@ -23,4 +23,23 @@ router.get("/:id", (req, res, next) => {
     .catch(next);
 });
 
+router.delete("/delete/:id", (req, res, next) => {
+  Comments.findById(req.params.id)
+    .then((itemDocument) => {
+      if (!itemDocument) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+      if (itemDocument.userId.toString() !== req.session.currentUser) {
+        return res.status(403).json({ message: "You can't delete this item" });
+      }
+
+      Comments.findByIdAndDelete(req.params.id)
+        .then(() => {
+          return res.sendStatus(204);
+        })
+        .catch(next);
+    })
+    .catch(next);
+});
+
 module.exports = router;
