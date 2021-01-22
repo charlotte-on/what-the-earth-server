@@ -23,6 +23,7 @@ const companySchema = new Schema(
     },
     field: { type: String, required: true },
     description: { type: String, required: true },
+    bannerImg: { type: String, default: "/media/fruits-veggies.jpg" },
   },
   { timestamps: true }
 );
